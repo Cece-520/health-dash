@@ -99,10 +99,6 @@ export default function CheckIn() {
     const { data: { session } } = await supabase.auth.getSession()
     if (!session) { router.push('/'); return }
 
-    //Debugggg
-    console.log('SESSION:', session)        // ← add this line
-    console.log('TOKEN:', session.access_token) 
-
     const today = new Date().toISOString().split('T')[0]
 
     const body = {

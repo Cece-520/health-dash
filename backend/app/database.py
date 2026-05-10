@@ -4,15 +4,15 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-_client: Client | None = None
-
 
 def get_supabase() -> Client:
-    global _client
-    if _client is None:
-        url = os.getenv("SUPABASE_URL")
-        key = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
-        if not url or not key:
-            raise RuntimeError("Supabase credentials not set in .env")
-        _client = create_client(url, key)
-    return _client
+    url = os.getenv("SUPABASE_URL")
+    key = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
+
+    print(f"SUPABASE_URL found: {bool(url)}")        # debug
+    print(f"SERVICE_KEY found: {bool(key)}")          # debug
+
+    if not url or not key:
+        raise RuntimeError("Supabase credentials not set in .env")
+    
+    return create_client(url, key)

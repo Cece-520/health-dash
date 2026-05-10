@@ -3,43 +3,55 @@ import httpx
 
 router = APIRouter()
 
-MEDLINEPLUS_URL = "https://connect.medlineplus.gov/service"
+MEDLINEPLUS_SEARCH_URL = "https://wsearch.nlm.nih.gov/ws/query"
 
 
 @router.get("/info")
 async def get_symptom_info(name: str):
     """
-    Proxies to MedlinePlus Connect API.
-    No API key required — free public health data from the US National Library of Medicine.
+    Uses MedlinePlus web search API — works with plain English symptom names.
     """
     params = {
-        "mainSearchCriteria.v.cs": "2.16.840.1.113883.6.90",
-        "mainSearchCriteria.v.dn": name,
-        "informationRecipient.languageCode.c": "en",
-        "knowledgeResponseType": "application/json",
+        "db": "healthTopics",
+        "term": name,
+        "retmax": 3,
     }
 
     async with httpx.AsyncClient() as client:
         try:
-            response = await client.get(MEDLINEPLUS_URL, params=params, timeout=10.0)
+            response = await client.get(
+                MEDLINEPLUS_SEARCH_URL, params=params, timeout=10.0
+            )
             response.raise_for_status()
-            data = response.json()
 
-            # Extract relevant entries from the MedlinePlus response
-            entries = data.get("feed", {}).get("entry", [])
-            results = [
-                {
-                    "title": e.get("title", {}).get("_value", ""),
-                    "summary": e.get("summary", {}).get("_value", ""),
-                    "url": e.get("link", [{}])[0].get("href", ""),
-                }
-                for e in entries[:3]  # Return top 3 results
-            ]
+            # Parse XML response
+            import xml.etree.ElementTree as ET
+            root = ET.fromstring(response.text)
+
+            results = []
+            for doc in root.findall(".//document"):
+                title_el = doc.find(".//content[@name='title']")
+                snippet_el = doc.find(".//content[@name='FullSummary']")
+                url = doc.get("url", "")
+
+                title = title_el.text if title_el is not None else ""
+                summary = snippet_el.text if snippet_el is not None else ""
+
+                # Strip HTML tags from summary
+                import re
+                summary = re.sub(r"<[^>]+>", "", summary or "")
+
+                if title:
+                    results.append({
+                        "title": title,
+                        "summary": summary[:400] + "..." if len(summary) > 400 else summary,
+                        "url": url,
+                    })
 
             return {
                 "symptom": name,
                 "source": "MedlinePlus — U.S. National Library of Medicine",
-                "disclaimer": "This information is for educational purposes only.",
+                "disclaimer": "This information is for educational purposes only. Always consult a healthcare professional.",
                 "results": results,
             }
 

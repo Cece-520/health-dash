@@ -15,9 +15,12 @@ async def get_current_user(
     token = credentials.credentials
     try:
         supabase = get_supabase()
+        print(f"TOKEN RECEIVED: {token[:20]}...") 
         response = supabase.auth.get_user(token)
+        print(f"USER RESPONSE: {response}")  
         if not response.user:
             raise HTTPException(status_code=401, detail="Invalid or expired token")
         return response.user
-    except Exception:
+    except Exception as e:
+        print(f"AUTH ERROR: {str(e)}")  
         raise HTTPException(status_code=401, detail="Could not validate credentials")

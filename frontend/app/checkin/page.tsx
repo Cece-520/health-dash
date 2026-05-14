@@ -25,7 +25,7 @@ function Slider({ label, value, onChange, color, min = 1, max = 10, step = 1, un
   return (
     <div>
       <div className="flex justify-between items-center mb-2">
-        <label className="text-zinc-500 text-xs tracking-widest uppercase">{label}</label>
+        <label className="text-zinc-600 dark:text-zinc-500 text-xs tracking-widest uppercase">{label}</label>
         <span className={`text-sm font-bold ${color}`}>
           {value}{unit ?? ` / ${max}`}
         </span>
@@ -40,7 +40,7 @@ function Slider({ label, value, onChange, color, min = 1, max = 10, step = 1, un
         className="w-full h-1.5 rounded-full appearance-none cursor-pointer"
         style={{ accentColor: color.replace('text-', '').includes('green') ? '#4ade80' : color.includes('blue') ? '#60a5fa' : '#fbbf24' }}
       />
-      <div className="flex justify-between text-zinc-700 text-xs mt-1">
+      <div className="flex justify-between text-zinc-600 dark:text-zinc-700 text-xs mt-1">
         <span>{min}</span>
         <span>{max}</span>
       </div>
@@ -135,21 +135,27 @@ export default function CheckIn() {
 
   if (success) {
     return (
-      <main className="min-h-screen bg-[#0f0f0f] flex items-center justify-center font-mono">
+      <main className="min-h-screen bg-white dark:bg-[#0f0f0f] flex items-center justify-center font-mono transition-colors">
         <div className="text-center">
           <div className="text-5xl mb-4">✅</div>
           <p className="text-green-400 font-bold text-lg">Check-in saved!</p>
-          <p className="text-zinc-500 text-sm mt-2">Redirecting to dashboard...</p>
+          <p className="text-zinc-600 dark:text-zinc-500 text-sm mt-2">Redirecting to dashboard...</p>
         </div>
       </main>
     )
   }
 
   return (
-    <main className="min-h-screen bg-[#0f0f0f] font-mono text-white">
+    <main className="min-h-screen bg-white dark:bg-[#0f0f0f] font-mono text-black dark:text-white transition-colors">
 
       {/* Background grid */}
-      <div className="fixed inset-0 pointer-events-none"
+      <div className="fixed inset-0 pointer-events-none dark:hidden"
+        style={{
+          backgroundImage: 'linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px)',
+          backgroundSize: '40px 40px'
+        }}
+      />
+      <div className="fixed inset-0 pointer-events-none hidden dark:block"
         style={{
           backgroundImage: 'linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)',
           backgroundSize: '40px 40px'
@@ -165,28 +171,28 @@ export default function CheckIn() {
               <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
               <span className="text-green-400 text-xs tracking-widest uppercase">Daily Check-in</span>
             </div>
-            <h1 className="text-2xl font-bold">
+            <h1 className="text-2xl font-bold text-black dark:text-white">
               {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
             </h1>
           </div>
           <button
             onClick={() => router.push('/dashboard')}
-            className="text-zinc-500 hover:text-zinc-300 text-xs transition-colors"
+            className="text-zinc-600 hover:text-zinc-700 dark:text-zinc-500 dark:hover:text-zinc-300 text-xs transition-colors"
           >
             ← Back
           </button>
         </div>
 
         {/* Sliders */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 mb-4 space-y-7">
+        <div className="bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 mb-4 space-y-7 transition-colors">
           <Slider label="Mood" value={mood} onChange={setMood} color="text-green-400" />
           <Slider label="Sleep" value={sleep} onChange={setSleep} color="text-blue-400" min={0} max={12} step={0.5} unit=" hrs" />
           <Slider label="Energy" value={energy} onChange={setEnergy} color="text-amber-400" />
         </div>
 
         {/* Symptoms */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 mb-4">
-          <p className="text-zinc-500 text-xs tracking-widest uppercase mb-4">Symptoms (optional)</p>
+        <div className="bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 mb-4 transition-colors">
+          <p className="text-zinc-600 dark:text-zinc-500 text-xs tracking-widest uppercase mb-4">Symptoms (optional)</p>
 
           {/* Quick select */}
           <div className="flex flex-wrap gap-2 mb-4">
@@ -197,7 +203,7 @@ export default function CheckIn() {
                 className={`text-xs px-3 py-1.5 rounded-lg border transition-colors ${
                   selectedSymptoms.includes(s)
                     ? 'bg-green-400 border-green-400 text-black font-bold'
-                    : 'border-zinc-700 text-zinc-400 hover:border-zinc-500'
+                    : 'border-zinc-300 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:border-zinc-400 dark:hover:border-zinc-500'
                 }`}
               >
                 {s}
@@ -213,11 +219,11 @@ export default function CheckIn() {
               onChange={e => setCustomSymptom(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && addCustomSymptom()}
               placeholder="Add custom symptom..."
-              className="flex-1 bg-zinc-800 border border-zinc-700 text-white text-xs rounded-lg px-3 py-2 outline-none focus:border-green-400 transition-colors placeholder:text-zinc-600"
+              className="flex-1 bg-zinc-200 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-black dark:text-white text-xs rounded-lg px-3 py-2 outline-none focus:border-green-400 transition-colors placeholder:text-zinc-600 dark:placeholder:text-zinc-600"
             />
             <button
               onClick={addCustomSymptom}
-              className="text-xs bg-zinc-800 border border-zinc-700 hover:border-zinc-500 text-zinc-400 px-3 py-2 rounded-lg transition-colors"
+              className="text-xs bg-zinc-200 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 hover:border-zinc-400 dark:hover:border-zinc-500 text-zinc-700 dark:text-zinc-400 px-3 py-2 rounded-lg transition-colors"
             >
               Add
             </button>
@@ -225,11 +231,11 @@ export default function CheckIn() {
 
           {/* Severity sliders for selected symptoms */}
           {selectedSymptoms.length > 0 && (
-            <div className="mt-5 space-y-4 border-t border-zinc-800 pt-5">
-              <p className="text-zinc-600 text-xs tracking-widest uppercase">Severity</p>
+            <div className="mt-5 space-y-4 border-t border-zinc-300 dark:border-zinc-800 pt-5">
+              <p className="text-zinc-600 dark:text-zinc-600 text-xs tracking-widest uppercase">Severity</p>
               {selectedSymptoms.map(s => (
                 <div key={s} className="flex items-center gap-4">
-                  <span className="text-zinc-400 text-xs w-28 truncate">{s}</span>
+                  <span className="text-zinc-700 dark:text-zinc-400 text-xs w-28 truncate">{s}</span>
                   <input
                     type="range"
                     min={1}
@@ -247,20 +253,20 @@ export default function CheckIn() {
         </div>
 
         {/* Notes */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 mb-6">
-          <label className="text-zinc-500 text-xs tracking-widest uppercase block mb-3">Notes (optional)</label>
+        <div className="bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 mb-6 transition-colors">
+          <label className="text-zinc-600 dark:text-zinc-500 text-xs tracking-widest uppercase block mb-3">Notes (optional)</label>
           <textarea
             value={notes}
             onChange={e => setNotes(e.target.value)}
             placeholder="How are you feeling today? Anything unusual?"
             rows={3}
-            className="w-full bg-zinc-800 border border-zinc-700 text-white text-sm rounded-lg px-4 py-3 outline-none focus:border-green-400 transition-colors placeholder:text-zinc-600 resize-none"
+            className="w-full bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-black dark:text-white text-sm rounded-lg px-4 py-3 outline-none focus:border-green-400 transition-colors placeholder:text-zinc-600 dark:placeholder:text-zinc-600 resize-none"
           />
         </div>
 
         {/* Error */}
         {error && (
-          <div className="bg-red-950 border border-red-800 text-red-400 text-xs px-4 py-3 rounded-lg mb-4">
+          <div className="bg-red-100 dark:bg-red-950 border border-red-300 dark:border-red-800 text-red-700 dark:text-red-400 text-xs px-4 py-3 rounded-lg mb-4 transition-colors">
             {error}
           </div>
         )}

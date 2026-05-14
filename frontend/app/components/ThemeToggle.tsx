@@ -13,7 +13,7 @@ export function ThemeToggle() {
   return (
     <button
       onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-      className="text-zinc-500 hover:text-zinc-300 transition-colors text-sm border border-zinc-700 px-3 py-2 rounded-lg"
+      className="fixed bottom-6 right-6 z-50 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-sm px-4 py-3 rounded-full shadow-lg transition-colors"
       title="Toggle theme"
     >
       {theme === 'dark' ? '☀️' : '🌙'}

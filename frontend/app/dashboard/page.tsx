@@ -139,6 +139,12 @@ export default function Dashboard() {
               + Check in
             </button>
             <button
+              onClick={() => router.push('/symptoms')}
+              className="text-zinc-500 hover:text-zinc-300 text-xs transition-colors border border-zinc-700 px-3 py-2 rounded-lg"
+            >
+              🔍 Symptoms
+            </button>
+            <button
               onClick={handleSignOut}
               className="text-zinc-500 hover:text-zinc-300 text-xs transition-colors"
             >

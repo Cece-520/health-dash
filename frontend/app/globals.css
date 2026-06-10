@@ -25,3 +25,15 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* ← add these */
+html,
+body {
+  min-height: 100%;
+}
+
+html.dark,
+html.dark body {
+  background-color: #0f0f0f;
+  color: #ffffff;
+}
